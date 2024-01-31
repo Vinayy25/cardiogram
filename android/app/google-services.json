@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "17965689242",
+    "firebase_url": "https://cardiogram-proj-default-rtdb.firebaseio.com",
+    "project_id": "cardiogram-proj",
+    "storage_bucket": "cardiogram-proj.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:17965689242:android:db7f0f95b511152ac2b223",
+        "android_client_info": {
+          "package_name": "com.example.cardiogram"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXW4jD4Mg7BBoEmTdrgSmjwLIFPtuWohU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:17965689242:android:00665ba14e668677c2b223",
+        "android_client_info": {
+          "package_name": "com.example.cardiogram"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXW4jD4Mg7BBoEmTdrgSmjwLIFPtuWohU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

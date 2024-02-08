@@ -13,7 +13,20 @@
           "package_name": "com.example.cardiogram"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "17965689242-bjcfpc4n4nfbadmsq22ij4dagfvbqgun.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cardiogram",
+            "certificate_hash": "2c5ba78f5b5d7750668884600c0af01d55286e67"
+          }
+        },
+        {
+          "client_id": "17965689242-qg3cnahtaea3fv3bcv4ba66m2tqum2o9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBXW4jD4Mg7BBoEmTdrgSmjwLIFPtuWohU"
@@ -21,7 +34,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "17965689242-qg3cnahtaea3fv3bcv4ba66m2tqum2o9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "17965689242-193men5fe6j2vank36qubdk4tqn9glo6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.healthapp"
+              }
+            }
+          ]
         }
       }
     },
@@ -29,10 +54,15 @@
       "client_info": {
         "mobilesdk_app_id": "1:17965689242:android:00665ba14e668677c2b223",
         "android_client_info": {
-          "package_name": "com.example.cardiogram"
+          "package_name": "com.example.healthapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "17965689242-qg3cnahtaea3fv3bcv4ba66m2tqum2o9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBXW4jD4Mg7BBoEmTdrgSmjwLIFPtuWohU"
@@ -40,7 +70,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "17965689242-qg3cnahtaea3fv3bcv4ba66m2tqum2o9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "17965689242-193men5fe6j2vank36qubdk4tqn9glo6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.healthapp"
+              }
+            }
+          ]
         }
       }
     }

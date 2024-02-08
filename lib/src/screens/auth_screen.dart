@@ -49,13 +49,23 @@ class AuthScreen extends StatelessWidget {
   }
 }
 
-class SignInContainer extends StatelessWidget {
+class SignInContainer extends StatefulWidget {
+
   final AuthStateProvider provider;
-  const SignInContainer({super.key, required this.provider});
+   SignInContainer({super.key, required this.provider});
+
+  @override
+  State<SignInContainer> createState() => _SignInContainerState();
+}
+
+class _SignInContainerState extends State<SignInContainer> {
+  final deviceIdControlller = TextEditingController();
+
+  final phoneNumberController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final deviceIdControlller = TextEditingController();
+
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return FadeInDown(
@@ -114,6 +124,17 @@ class SignInContainer extends StatelessWidget {
           SizedBox(
             height: 20,
           ),
+          CurvedTextFields(
+              hintText: "enter Whatsapp number",
+              icon: Icon(
+                Icons.phone,
+                color: secondaryColor,
+              ),
+              obscureText: false,
+              keyboardType: TextInputType.number,
+              controller: phoneNumberController,
+              width: width * 0.7,
+              height: 50),
           SizedBox(
             height: 10,
           ),
@@ -123,8 +144,8 @@ class SignInContainer extends StatelessWidget {
               size: 20,
             ),
             onPressed: () async {
-              final String res = await FirebaseService()
-                  .signInWithGoogle(deviceIdControlller.text);
+              final String res = await FirebaseService().signInWithGoogle(
+                  deviceIdControlller.text, phoneNumberController.text);
               if (res == 'SUCCESS') {
               } else {
                 ErrorDialog.showErrorDialog(context, res);

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:emailjs/emailjs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -8,15 +9,20 @@ class FirebaseService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  Future<String> signInWithGoogle(String deviceId) async {
+  Future<String> signInWithGoogle(String deviceId, String phoneNumber) async {
     try {
-      if (deviceId == null || deviceId == '' || deviceId.length < 3) {
-        return 'enter correct device id';
+      if (deviceId == null ||
+          deviceId == '' ||
+          deviceId.length < 3 ||
+          phoneNumber == null ||
+          phoneNumber == '' ||
+          phoneNumber.length < 10) {
+        return 'enter correct device id and phone number';
       }
       final GoogleSignInAccount? googleSignInAccount =
           await _googleSignIn.signIn();
 
-      if (googleSignInAccount != null ) {
+      if (googleSignInAccount != null) {
         final GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
 
@@ -29,15 +35,15 @@ class FirebaseService {
         final User? user = userCredential.user;
         print(user?.email ?? "no email");
       } else {
-        print("not a sode email");
+        print("error");
 
         await _googleSignIn.signOut();
-        return 'NOT A SODE EMAIL';
+        return 'ERROR';
       }
-      await FirebaseFirestore.instance.
-          collection('deviceIds')
+      await FirebaseFirestore.instance
+          .collection('deviceIds')
           .doc(_firebaseAuth.currentUser?.email)
-          .set({'deviceId': deviceId});
+          .set({'deviceId': deviceId, 'phoneNumber': phoneNumber});
       return 'SUCCESS';
     } catch (e) {
       throw e;
@@ -53,10 +59,33 @@ class FirebaseService {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
-  Future<String>getDeviceId(){
-    return FirebaseFirestore.instance.
-    collection('deviceIds')
+  Future<String> getDeviceId() {
+    return FirebaseFirestore.instance
+        .collection('deviceIds')
         .doc(_firebaseAuth.currentUser?.email)
-        .get().then((value) => value['deviceId']);
+        .get()
+        .then((value) => value['deviceId']);
   }
+
+  Future<String> getPhoneNumber() {
+    return FirebaseFirestore.instance
+        .collection('deviceIds')
+        .doc(_firebaseAuth.currentUser?.email)
+        .get()
+        .then((value) => value['phoneNumber']);
+  }
+
+  Future<Map<String, String>> getTwilioDetails() {
+    return FirebaseFirestore.instance
+        .collection('deviceIds')
+        .doc(_firebaseAuth.currentUser?.email)
+        .get()
+        .then((value) => {
+              'accountSid': value['accountSid'],
+              'authToken': value['authToken'],
+              'twilioNumber': value['twilioNumber']
+            });
+  }
+
+
 }

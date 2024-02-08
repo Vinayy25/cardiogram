@@ -117,6 +117,10 @@ class CurvedTextFields extends StatelessWidget {
             style: GoogleFonts.montserrat(),
             obscureText: obscureText,
             keyboardType: keyboardType,
+            onChanged: (value){
+              print(value);
+            },
+            
             
             controller: controller,
             maxLines: maxLines,

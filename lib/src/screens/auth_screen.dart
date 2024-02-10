@@ -125,7 +125,7 @@ class _SignInContainerState extends State<SignInContainer> {
             height: 20,
           ),
           CurvedTextFields(
-              hintText: "enter Whatsapp number",
+              hintText: "enter phone number",
               icon: Icon(
                 Icons.phone,
                 color: secondaryColor,

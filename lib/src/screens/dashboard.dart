@@ -1,14 +1,20 @@
+import 'dart:math';
+
+import 'package:action_slider/action_slider.dart';
 import 'package:cardiogram/services/firebase_service.dart';
 import 'package:cardiogram/src/widgets/heart_chart.dart';
 import 'package:cardiogram/states/auth_state.dart';
+import 'package:cardiogram/utils/error_dialog.dart';
 import 'package:cardiogram/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cardiogram/states/data_provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 
 import '../animations/fade_in.dart';
 import '../widgets/app_card.dart';
@@ -24,6 +30,10 @@ class DashBoardScreen extends StatefulWidget {
 }
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
+  final GlobalKey<SlideActionState> _key = GlobalKey();
+  final emailSubmitController = ActionSliderController();
+  final smsSubmitController = ActionSliderController();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -62,9 +72,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     children: [
                       Text(
                         dateString,
-                        style: TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 18),
                       ),
-                      Text(
+                      const Text(
                         "My Day",
                         style: TextStyle(fontSize: 34),
                       ),
@@ -87,12 +97,20 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                           ),
                           child: Consumer<AuthStateProvider>(
                               builder: (context, provider, child) {
-                            return ElevatedButton.icon(
-                                onPressed: () async => provider.logoutAll(),
-                                icon: const Icon(FontAwesomeIcons.signOut),
-                                label: const AppText(
-                                  text: "Logout",
-                                ));
+                            return Column(
+                              children: [
+                                AppText(text: 'Device ID: ${provider.deviceId}'),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                ElevatedButton.icon(
+                                    onPressed: () async => provider.logoutAll(),
+                                    icon: const Icon(FontAwesomeIcons.signOut),
+                                    label: const AppText(
+                                      text: "Logout",
+                                    )),
+                              ],
+                            );
                           }),
                         ),
                       ),
@@ -135,7 +153,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                         "SPO",
                                         style: TextStyle(fontSize: 18),
                                       ),
-                                      Text('2', style: TextStyle(fontSize: 15)),
+                                      const Text('2',
+                                          style: TextStyle(fontSize: 15)),
                                       const Spacer(),
                                       SizedBox(
                                         height: 30,
@@ -171,12 +190,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       FadeInAnimation(
                         delay: 2,
                         child: AppCard(
-                          height: 500,
+                          height: 300,
                           color: Colors.deepPurple,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
+                              const Row(
                                 children: [
                                   Text(
                                     "Notification",
@@ -199,29 +218,28 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                       if (provider.heartRiskLog.isNotEmpty &&
                                           provider.heartRisk) {
                                         myText += "Heart Risk:\n";
-                                        provider.heartRiskLog
-                                            .forEach((element) {
-                                          myText += element + "\n";
-                                        });
+                                        for (var element
+                                            in provider.heartRiskLog) {
+                                          myText += "$element\n";
+                                        }
                                       }
 
                                       if (provider.oxygenRiskLog.isNotEmpty &&
                                           provider.oxygenRisk) {
                                         myText += "\nOxygen Risk:\n";
-                                        provider.oxygenRiskLog
-                                            .forEach((element) {
-                                          myText += element + "\n";
-                                        });
+                                        for (var element
+                                            in provider.oxygenRiskLog) {
+                                          myText += "$element\n";
+                                        }
                                       }
-
                                       if (provider
                                               .temperatureRiskLog.isNotEmpty &&
                                           provider.temperatureRisk) {
                                         myText += "\nTemperature Risk:\n";
-                                        provider.temperatureRiskLog
-                                            .forEach((element) {
-                                          myText += element + "\n";
-                                        });
+                                        for (var element
+                                            in provider.temperatureRiskLog) {
+                                          myText += "$element\n";
+                                        }
                                       }
                                       if (myText != "") {
                                         myText += "\nPlease consult a doctor";
@@ -233,21 +251,26 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                             text: myText,
                                             color: Colors.white,
                                           ),
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                myText = "";
-                                                provider.heartRisk = false;
-                                                provider.oxygenRisk = false;
-                                                provider.temperatureRisk =
-                                                    false;
-                                                provider.heartRiskLog = [];
-                                                provider.oxygenRiskLog = [];
-                                                provider.temperatureRiskLog =
-                                                    [];
-                                              },
-                                              child: AppText(
-                                                text: 'ok',
-                                              ))
+                                          (myText.isEmpty)
+                                              ? const AppText(
+                                                  color: Colors.white,
+                                                  text:
+                                                      "You've got no notifications")
+                                              : ElevatedButton(
+                                                  onPressed: () {
+                                                    myText = "";
+                                                    provider.heartRisk = false;
+                                                    provider.oxygenRisk = false;
+                                                    provider.temperatureRisk =
+                                                        false;
+                                                    provider.heartRiskLog = [];
+                                                    provider.oxygenRiskLog = [];
+                                                    provider.temperatureRiskLog =
+                                                        [];
+                                                  },
+                                                  child: const AppText(
+                                                    text: 'ok',
+                                                  ))
                                         ],
                                       );
                                     }),
@@ -353,7 +376,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   ),
                                   Text(
                                     provider.heartRate.toString(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 32,
                                     ),
@@ -412,7 +435,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                     child: Center(
                                       child: Text(
                                         value.temperature.toString(),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 32,
                                         ),
                                       ),
@@ -425,37 +448,78 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         }),
                       ),
                       const SizedBox(height: 30),
-                      const FadeInAnimation(
+                      FadeInAnimation(
                         delay: 2.5,
                         child: AppCard(
-                          height: 155,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    "",
-                                    style: TextStyle(fontSize: 18),
+                          height: 150,
+                          child: Consumer<DataProvider>(
+                              builder: (context, provider, child) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ActionSlider.standard(
+                                  successIcon: Icon(
+                                    Icons.check,
+                                    color: Colors.white,
                                   ),
-                                  Spacer(),
-                                  Icon(
-                                    Iconsax.speedometer5,
-                                    color: Colors.deepPurple,
+                                  icon: Icon(Icons.keyboard_arrow_right_rounded,
+                                      color: Colors.white),
+                                  action: (emailSubmitController) {
+                                    emailSubmitController.success();
+                                    provider.email();
+
+                                    ErrorDialog.showErrorDialog(context,
+                                        'This is only to show demo of email alert\nPlease check your email');
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                AppText(
+                                  text: "Send email",
+                                  fontsize: 15,
+                                ),
+                              ],
+                            );
+                          }),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      FadeInAnimation(
+                        delay: 2.5,
+                        child: AppCard(
+                          height: 150,
+                          child: Consumer<DataProvider>(
+                              builder: (context, provider, child) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ActionSlider.standard(
+                                  icon: Icon(Icons.keyboard_arrow_right_rounded,
+                                      color: Colors.white),
+                                  successIcon: const Icon(
+                                    Icons.check,
+                                    color: Colors.white,
                                   ),
-                                ],
-                              ),
-                              Spacer(),
-                              Text(
-                                "0",
-                                style: TextStyle(fontSize: 32),
-                              ),
-                              Text(
-                                "min",
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
+                                  action: (smsSubmitController) async {
+                                    smsSubmitController.success();
+
+                                    ErrorDialog.showErrorDialog(context,
+                                        "This is only to show demo of SMS alert/Please check your SMS");
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                const AppText(
+                                  text: "Send SMS",
+                                  fontsize: 15,
+                                ),
+                              ],
+                            );
+                          }),
                         ),
                       ),
                     ],

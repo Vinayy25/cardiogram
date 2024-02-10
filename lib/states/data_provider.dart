@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:cardiogram/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,7 +19,7 @@ class DataProvider extends ChangeNotifier {
   late DatabaseReference _temperatureRef;
   late DatabaseReference _oxygenRef;
   String deviceId = '';
-  bool canSendSms = false;
+  bool canSendSms = true;
   String userEmail = '';
   bool heartRisk = false;
   bool oxygenRisk = false;
@@ -40,13 +41,13 @@ class DataProvider extends ChangeNotifier {
   String authToken = '';
   String twilioNumber = '';
   // ignore: constant_identifier_names
-  static const String YOUR_SERVICE_ID = 'service_wjdh5hp';
+  static const String YOUR_SERVICE_ID = 'service_hbxaofs';
   // ignore: constant_identifier_names
-  static const String YOUR_TEMPLATE_ID = 'template_st0w37m';
+  static const String YOUR_TEMPLATE_ID = 'template_u20lfui';
   // ignore: constant_identifier_names
-  static const String YOUR_PUBLIC_KEY = 'bupyCZf6_lUBwwOUi';
+  static const String YOUR_PUBLIC_KEY = 'tWOpter490Q-5_ATW';
   // ignore: constant_identifier_names
-  static const String YOUR_PRIVATE_KEY = 'DZHak3GqAShCugho5gtIr';
+  static const String YOUR_PRIVATE_KEY = 'dlaeqS7TU8-Gx27ZEG4Xp';
 
   DataProvider() {
     // Make the constructor asynchronous
@@ -151,7 +152,7 @@ class DataProvider extends ChangeNotifier {
             heartRate > 180 ||
             temperature > 100 ||
             oxygen < 90) &&
-        secondsCounter > 5 ) {
+        secondsCounter > 5) {
       return;
     }
 
@@ -161,7 +162,7 @@ class DataProvider extends ChangeNotifier {
       currTemperatureSum += temperature;
       secondsCounter++;
     } else {
-      currHeartRateSum =  
+      currHeartRateSum =
           currOxygenRateSum = currTemperatureSum = secondsCounter = 0;
     }
 
@@ -170,16 +171,16 @@ class DataProvider extends ChangeNotifier {
     double avgTemperature = (currTemperatureSum / secondsCounter);
 
     // Define thresholds for normal and abnormal values
-    final heartRateThresholds = {'bradycardia': 60, 'tachycardia': 100};
-    final spo2Thresholds = {'normal_low': 95, 'abnormal_low': 90};
-    final temperatureThresholds = {'fever': 100.4, 'low': 95};
-
+    final heartRateThresholds = {'bradycardia': 40, 'tachycardia': 150};
+    final spo2Thresholds = {'normal_low': 95, 'abnormal_low': 92};
+    final temperatureThresholds = {'fever': 40, 'low': 35};
 
     if (avgheartrate < heartRateThresholds['bradycardia']! && !heartRisk) {
       heartRiskLog.add("Bradycardia detected");
 
       heartRisk = true;
-    } else if (avgheartrate > heartRateThresholds['tachycardia']! && !heartRisk) {
+    } else if (avgheartrate > heartRateThresholds['tachycardia']! &&
+        !heartRisk) {
       heartRiskLog.add("Tachycardia detected");
       heartRisk = true;
     }
@@ -193,9 +194,9 @@ class DataProvider extends ChangeNotifier {
 
     // Check temperature
     if (avgTemperature > temperatureThresholds['fever']! && !temperatureRisk) {
-      temperatureRiskLog.add("Fever detected");
+      temperatureRiskLog.add("High body temperature detected");
       temperatureRisk = true;
-    } else if (avgTemperature < temperatureThresholds['low']! && 
+    } else if (avgTemperature < temperatureThresholds['low']! &&
         !temperatureRisk) {
       temperatureRiskLog.add("Low body temperature detected");
       temperatureRisk = true;
@@ -212,8 +213,8 @@ class DataProvider extends ChangeNotifier {
 
   Future<void> getPhoneNumber() async {
     phoneNumber = await FirebaseService().getPhoneNumber();
-    // sendSMS();
-    email();
+   
+
     notifyListeners();
   }
 
@@ -226,26 +227,37 @@ class DataProvider extends ChangeNotifier {
   }
 
   void sendSMS() {
+
+
     TwilioFlutter twilioFlutter;
     twilioFlutter = TwilioFlutter(
         accountSid: accountSid,
         authToken: authToken,
         twilioNumber: twilioNumber);
     Future<int> response = twilioFlutter.sendSMS(
-        toNumber: '+91${phoneNumber}', messageBody: 'hello world');
+        toNumber: '+91$phoneNumber', messageBody: 'Emergancy! Heart rate is abnormal\nHeartRate:$heartRate\nOxygen:$oxygen\nTemperature:$temperature\n');
     response.then((value) => print(value.toString()));
+    if(response == 201){
+      canSendSms= false;
+      print('message sent');
+    }
   }
 
-  void email() async {
-    await sendEmail(
+  Future<int> email() async {
+    String mainReadings =
+        "Heart Rate: $heartRate\nOxygen: $oxygen\nTemperature: $temperature";
+   int response=  await sendEmail(
         fromName: 'cardiogram',
-        toEmail: userEmail ,
-        message: "${heartRiskLog.join('\n')}\n${oxygenRiskLog.join('\n')}\n${temperatureRiskLog.join('\n ')}" ,
+        toEmail: userEmail,
+        message:
+            "$mainReadings\n\n${heartRiskLog.join('\n')}\n${oxygenRiskLog.join('\n')}\n${temperatureRiskLog.join('\n ')}",
         replyTo: 'cardiogram60@gmail.com',
-        heartRate: heartRate.toString()); 
+        heartRate: heartRate.toString());
+
+       return response;
   }
 
-  Future sendEmail(
+  Future<int> sendEmail(
       {required String fromName,
       required String toEmail,
       required String message,
@@ -272,8 +284,12 @@ class DataProvider extends ChangeNotifier {
           }
         }),
       );
+      return response.statusCode;
+     
     } catch (e) {
       print(e.toString());
+
+      return 400;      
     }
   }
 }

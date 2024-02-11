@@ -34,20 +34,48 @@ class FirebaseService {
             await _firebaseAuth.signInWithCredential(authCredential);
         final User? user = userCredential.user;
         print(user?.email ?? "no email");
+
+        if(userCredential.additionalUserInfo?.isNewUser == true){
+            print('reached to this point ');
+               await FirebaseFirestore.instance
+              .collection('deviceIds')
+              .doc(_firebaseAuth.currentUser?.email)
+              .set({
+            'deviceId': deviceId,
+            'phoneNumber': phoneNumber,
+            'accountSid': 'AC5c014bbd8592d10d634948a1c7eb61a4',
+            'authToken': 'cb2e28846766bd779a895d39e9b94d64',
+            'twilioNumber': '+13203838376'
+          });
+
+
+FirebaseDatabase database = FirebaseDatabase.instance;
+          await database.ref('/$deviceId').update({
+            'heartrate': 0,
+            'temperature': 0,
+            'oxygen': 0,
+          });
+
+         
+        }
       } else {
         print("error");
 
         await _googleSignIn.signOut();
         return 'ERROR';
       }
-      await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
           .collection('deviceIds')
           .doc(_firebaseAuth.currentUser?.email)
-          .set({'deviceId': deviceId, 'phoneNumber': phoneNumber});
+          .update({'deviceId': deviceId, 'phoneNumber': phoneNumber,
+      
+      });    
+
+      
       return 'SUCCESS';
     } catch (e) {
       throw e;
-    }
+    } 
   }
 
   Future<void> signOut() async {
@@ -86,6 +114,17 @@ class FirebaseService {
               'twilioNumber': value['twilioNumber']
             });
   }
+  Future<void>updateCredentials(){
+    return 
+    FirebaseFirestore.instance
+        .collection('deviceIds')
+        .doc(_firebaseAuth.currentUser?.email)
+        .update(
+           
+          {
 
+          
+          'accountSid': 'AC5c014bbd8592d10d634948a1c7eb61a4', 'authToken': 'cb2e28846766bd779a895d39e9b94d64', 'twilioNumber':'+13203838376'});
+  }
 
 }

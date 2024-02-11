@@ -99,7 +99,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                               builder: (context, provider, child) {
                             return Column(
                               children: [
-                                AppText(text: 'Device ID: ${provider.deviceId}'),
+                                AppText(
+                                    text: 'Device ID: ${provider.deviceId}'),
                                 SizedBox(
                                   height: 5,
                                 ),
@@ -505,7 +506,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   ),
                                   action: (smsSubmitController) async {
                                     smsSubmitController.success();
-
+					provider.sendSMS();
                                     ErrorDialog.showErrorDialog(context,
                                         "This is only to show demo of SMS alert/Please check your SMS");
                                   },

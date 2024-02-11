@@ -9,7 +9,7 @@ class AuthStateProvider extends ChangeNotifier {
   AuthStateProvider() {
     
     checkAuthStatus();
-    getDeviceId();
+    if(isAuthenticated==true) getDeviceId();
   }
     void getDeviceId() async {
     deviceId = await FirebaseService().getDeviceId();

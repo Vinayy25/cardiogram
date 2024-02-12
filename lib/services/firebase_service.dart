@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emailjs/emailjs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cardiogram/utils/error_dialog.dart';
 
@@ -50,7 +51,7 @@ class FirebaseService {
 
 
 FirebaseDatabase database = FirebaseDatabase.instance;
-          await database.ref('/$deviceId').update({
+          await database.ref('/$deviceId').set({
             'heartrate': 0,
             'temperature': 0,
             'oxygen': 0,

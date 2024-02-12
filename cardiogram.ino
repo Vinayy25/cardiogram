@@ -1,3 +1,4 @@
+/* 1. Define the WiFi credentials */
 
 #define WIFI_SSID "poseidon"
 #define WIFI_PASSWORD "123456789"
@@ -35,7 +36,6 @@ DallasTemperature sensors(&oneWire);
 
 float Celsius = 0;
 
-/* 1. Define the WiFi credentials */
 
 #define USER_EMAIL "test@gmail.com"
 #define USER_PASSWORD "123456789"

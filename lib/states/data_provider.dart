@@ -202,6 +202,13 @@ class DataProvider extends ChangeNotifier {
       temperatureRisk = true;
     }
 
+    if(heartRisk ||oxygenRisk){
+      if(canSendSms){
+        sendSMS();
+      }
+      email();
+    }
+
     // Check additional thresholds
     // Example: High heart rate variability could indicate cardiac dysfunction
   }

@@ -51,6 +51,7 @@ final auth = FirebaseAuth.instance;
         notifyListeners();
       } else {
         isAuthenticated = true;
+        getDeviceId();
         notifyListeners();
       }
     });

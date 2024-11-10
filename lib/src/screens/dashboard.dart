@@ -407,7 +407,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   MaterialPageRoute(
                                       builder: (context) => RealTimeChart(
                                           title: 'Temperature Chart',
-                                          data: value.temperature,
+                                          data: value.temperature.toInt(),
                                           spots: value.temperatureSpots)));
                             },
                             child: AppCard(
@@ -435,7 +435,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   Expanded(
                                     child: Center(
                                       child: Text(
-                                        value.temperature.toString(),
+                                        value.temperature.toStringAsFixed(2),
                                         style: const TextStyle(
                                           fontSize: 32,
                                         ),
@@ -506,7 +506,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   ),
                                   action: (smsSubmitController) async {
                                     smsSubmitController.success();
-					provider.sendSMS();
+                                    provider.sendSMS();
                                     ErrorDialog.showErrorDialog(context,
                                         "This is only to show demo of SMS alert/Please check your SMS");
                                   },

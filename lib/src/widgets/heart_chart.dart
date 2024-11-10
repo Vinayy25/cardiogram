@@ -102,7 +102,7 @@ class _RealTimeChartState extends State<RealTimeChart> {
               ),
             ],
             titlesData: FlTitlesData(
-              leftTitles: AxisTitles(axisNameWidget: Text('heart rate')),
+              leftTitles: AxisTitles(axisNameWidget: Text(widget.title)),
               bottomTitles: AxisTitles(axisNameWidget: Text('time')),
             ),
             gridData: FlGridData(show: false),

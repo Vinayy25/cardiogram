@@ -36,9 +36,9 @@ class FirebaseService {
         final User? user = userCredential.user;
         print(user?.email ?? "no email");
 
-        if(userCredential.additionalUserInfo?.isNewUser == true){
-            print('reached to this point ');
-               await FirebaseFirestore.instance
+        if (userCredential.additionalUserInfo?.isNewUser == true) {
+          print('reached to this point ');
+          await FirebaseFirestore.instance
               .collection('deviceIds')
               .doc(_firebaseAuth.currentUser?.email)
               .set({
@@ -49,15 +49,12 @@ class FirebaseService {
             'twilioNumber': '+13203838376'
           });
 
-
-FirebaseDatabase database = FirebaseDatabase.instance;
+          FirebaseDatabase database = FirebaseDatabase.instance;
           await database.ref('/$deviceId').set({
             'heartrate': 0,
             'temperature': 0,
             'oxygen': 0,
           });
-
-         
         }
       } else {
         print("error");
@@ -65,18 +62,18 @@ FirebaseDatabase database = FirebaseDatabase.instance;
         await _googleSignIn.signOut();
         return 'ERROR';
       }
-    await FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection('deviceIds')
           .doc(_firebaseAuth.currentUser?.email)
-          .update({'deviceId': deviceId, 'phoneNumber': phoneNumber,
-      
-      });    
+          .update({
+        'deviceId': deviceId,
+        'phoneNumber': phoneNumber,
+      });
 
-      
       return 'SUCCESS';
     } catch (e) {
       throw e;
-    } 
+    }
   }
 
   Future<void> signOut() async {
@@ -115,17 +112,28 @@ FirebaseDatabase database = FirebaseDatabase.instance;
               'twilioNumber': value['twilioNumber']
             });
   }
-  Future<void>updateCredentials(){
-    return 
-    FirebaseFirestore.instance
-        .collection('deviceIds')
-        .doc(_firebaseAuth.currentUser?.email)
-        .update(
-           
-          {
 
-          
-          'accountSid': 'AC5c014bbd8592d10d634948a1c7eb61a4', 'authToken': 'cb2e28846766bd779a895d39e9b94d64', 'twilioNumber':'+13203838376'});
+  Future<Map<String, String>> getEmailJSDetails() {
+    return FirebaseFirestore.instance
+        .collection('keys')
+        .doc('myKeys')
+        .get()
+        .then((value) => {
+              'YOUR_SERVICE_ID': value['YOUR_SERVICE_ID'],
+              'YOUR_TEMPLATE_ID': value['YOUR_TEMPLATE_ID'],
+              'YOUR_PUBLIC_KEY': value['YOUR_PUBLIC_KEY'],
+              'YOUR_PRIVATE_KEY': value['YOUR_PRIVATE_KEY']
+            });
   }
 
+  Future<void> updateCredentials() {
+    return FirebaseFirestore.instance
+        .collection('deviceIds')
+        .doc(_firebaseAuth.currentUser?.email)
+        .update({
+      'accountSid': 'AC5c014bbd8592d10d634948a1c7eb61a4',
+      'authToken': 'cb2e28846766bd779a895d39e9b94d64',
+      'twilioNumber': '+13203838376'
+    });
+  }
 }
